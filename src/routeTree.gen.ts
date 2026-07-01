@@ -15,7 +15,11 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedPortalRouteImport } from './routes/_authenticated/portal'
 import { Route as AuthenticatedPortalIndexRouteImport } from './routes/_authenticated/portal.index'
+import { Route as AuthenticatedPortalTeamRouteImport } from './routes/_authenticated/portal.team'
+import { Route as AuthenticatedPortalProfileRouteImport } from './routes/_authenticated/portal.profile'
+import { Route as AuthenticatedPortalInquiriesRouteImport } from './routes/_authenticated/portal.inquiries'
 import { Route as AuthenticatedPortalFilesRouteImport } from './routes/_authenticated/portal.files'
+import { Route as AuthenticatedPortalFilesFileIdRouteImport } from './routes/_authenticated/portal.files.$fileId'
 
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
@@ -47,11 +51,34 @@ const AuthenticatedPortalIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedPortalRoute,
   } as any)
+const AuthenticatedPortalTeamRoute = AuthenticatedPortalTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => AuthenticatedPortalRoute,
+} as any)
+const AuthenticatedPortalProfileRoute =
+  AuthenticatedPortalProfileRouteImport.update({
+    id: '/profile',
+    path: '/profile',
+    getParentRoute: () => AuthenticatedPortalRoute,
+  } as any)
+const AuthenticatedPortalInquiriesRoute =
+  AuthenticatedPortalInquiriesRouteImport.update({
+    id: '/inquiries',
+    path: '/inquiries',
+    getParentRoute: () => AuthenticatedPortalRoute,
+  } as any)
 const AuthenticatedPortalFilesRoute =
   AuthenticatedPortalFilesRouteImport.update({
     id: '/files',
     path: '/files',
     getParentRoute: () => AuthenticatedPortalRoute,
+  } as any)
+const AuthenticatedPortalFilesFileIdRoute =
+  AuthenticatedPortalFilesFileIdRouteImport.update({
+    id: '/$fileId',
+    path: '/$fileId',
+    getParentRoute: () => AuthenticatedPortalFilesRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -59,15 +86,23 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/portal': typeof AuthenticatedPortalRouteWithChildren
-  '/portal/files': typeof AuthenticatedPortalFilesRoute
+  '/portal/files': typeof AuthenticatedPortalFilesRouteWithChildren
+  '/portal/inquiries': typeof AuthenticatedPortalInquiriesRoute
+  '/portal/profile': typeof AuthenticatedPortalProfileRoute
+  '/portal/team': typeof AuthenticatedPortalTeamRoute
   '/portal/': typeof AuthenticatedPortalIndexRoute
+  '/portal/files/$fileId': typeof AuthenticatedPortalFilesFileIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
-  '/portal/files': typeof AuthenticatedPortalFilesRoute
+  '/portal/files': typeof AuthenticatedPortalFilesRouteWithChildren
+  '/portal/inquiries': typeof AuthenticatedPortalInquiriesRoute
+  '/portal/profile': typeof AuthenticatedPortalProfileRoute
+  '/portal/team': typeof AuthenticatedPortalTeamRoute
   '/portal': typeof AuthenticatedPortalIndexRoute
+  '/portal/files/$fileId': typeof AuthenticatedPortalFilesFileIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -76,8 +111,12 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/_authenticated/portal': typeof AuthenticatedPortalRouteWithChildren
-  '/_authenticated/portal/files': typeof AuthenticatedPortalFilesRoute
+  '/_authenticated/portal/files': typeof AuthenticatedPortalFilesRouteWithChildren
+  '/_authenticated/portal/inquiries': typeof AuthenticatedPortalInquiriesRoute
+  '/_authenticated/portal/profile': typeof AuthenticatedPortalProfileRoute
+  '/_authenticated/portal/team': typeof AuthenticatedPortalTeamRoute
   '/_authenticated/portal/': typeof AuthenticatedPortalIndexRoute
+  '/_authenticated/portal/files/$fileId': typeof AuthenticatedPortalFilesFileIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -87,9 +126,22 @@ export interface FileRouteTypes {
     | '/contact'
     | '/portal'
     | '/portal/files'
+    | '/portal/inquiries'
+    | '/portal/profile'
+    | '/portal/team'
     | '/portal/'
+    | '/portal/files/$fileId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/contact' | '/portal/files' | '/portal'
+  to:
+    | '/'
+    | '/auth'
+    | '/contact'
+    | '/portal/files'
+    | '/portal/inquiries'
+    | '/portal/profile'
+    | '/portal/team'
+    | '/portal'
+    | '/portal/files/$fileId'
   id:
     | '__root__'
     | '/'
@@ -98,7 +150,11 @@ export interface FileRouteTypes {
     | '/contact'
     | '/_authenticated/portal'
     | '/_authenticated/portal/files'
+    | '/_authenticated/portal/inquiries'
+    | '/_authenticated/portal/profile'
+    | '/_authenticated/portal/team'
     | '/_authenticated/portal/'
+    | '/_authenticated/portal/files/$fileId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -152,6 +208,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPortalIndexRouteImport
       parentRoute: typeof AuthenticatedPortalRoute
     }
+    '/_authenticated/portal/team': {
+      id: '/_authenticated/portal/team'
+      path: '/team'
+      fullPath: '/portal/team'
+      preLoaderRoute: typeof AuthenticatedPortalTeamRouteImport
+      parentRoute: typeof AuthenticatedPortalRoute
+    }
+    '/_authenticated/portal/profile': {
+      id: '/_authenticated/portal/profile'
+      path: '/profile'
+      fullPath: '/portal/profile'
+      preLoaderRoute: typeof AuthenticatedPortalProfileRouteImport
+      parentRoute: typeof AuthenticatedPortalRoute
+    }
+    '/_authenticated/portal/inquiries': {
+      id: '/_authenticated/portal/inquiries'
+      path: '/inquiries'
+      fullPath: '/portal/inquiries'
+      preLoaderRoute: typeof AuthenticatedPortalInquiriesRouteImport
+      parentRoute: typeof AuthenticatedPortalRoute
+    }
     '/_authenticated/portal/files': {
       id: '/_authenticated/portal/files'
       path: '/files'
@@ -159,16 +236,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPortalFilesRouteImport
       parentRoute: typeof AuthenticatedPortalRoute
     }
+    '/_authenticated/portal/files/$fileId': {
+      id: '/_authenticated/portal/files/$fileId'
+      path: '/$fileId'
+      fullPath: '/portal/files/$fileId'
+      preLoaderRoute: typeof AuthenticatedPortalFilesFileIdRouteImport
+      parentRoute: typeof AuthenticatedPortalFilesRoute
+    }
   }
 }
 
+interface AuthenticatedPortalFilesRouteChildren {
+  AuthenticatedPortalFilesFileIdRoute: typeof AuthenticatedPortalFilesFileIdRoute
+}
+
+const AuthenticatedPortalFilesRouteChildren: AuthenticatedPortalFilesRouteChildren =
+  {
+    AuthenticatedPortalFilesFileIdRoute: AuthenticatedPortalFilesFileIdRoute,
+  }
+
+const AuthenticatedPortalFilesRouteWithChildren =
+  AuthenticatedPortalFilesRoute._addFileChildren(
+    AuthenticatedPortalFilesRouteChildren,
+  )
+
 interface AuthenticatedPortalRouteChildren {
-  AuthenticatedPortalFilesRoute: typeof AuthenticatedPortalFilesRoute
+  AuthenticatedPortalFilesRoute: typeof AuthenticatedPortalFilesRouteWithChildren
+  AuthenticatedPortalInquiriesRoute: typeof AuthenticatedPortalInquiriesRoute
+  AuthenticatedPortalProfileRoute: typeof AuthenticatedPortalProfileRoute
+  AuthenticatedPortalTeamRoute: typeof AuthenticatedPortalTeamRoute
   AuthenticatedPortalIndexRoute: typeof AuthenticatedPortalIndexRoute
 }
 
 const AuthenticatedPortalRouteChildren: AuthenticatedPortalRouteChildren = {
-  AuthenticatedPortalFilesRoute: AuthenticatedPortalFilesRoute,
+  AuthenticatedPortalFilesRoute: AuthenticatedPortalFilesRouteWithChildren,
+  AuthenticatedPortalInquiriesRoute: AuthenticatedPortalInquiriesRoute,
+  AuthenticatedPortalProfileRoute: AuthenticatedPortalProfileRoute,
+  AuthenticatedPortalTeamRoute: AuthenticatedPortalTeamRoute,
   AuthenticatedPortalIndexRoute: AuthenticatedPortalIndexRoute,
 }
 
