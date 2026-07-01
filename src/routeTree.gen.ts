@@ -9,38 +9,204 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedPortalRouteImport } from './routes/_authenticated/portal'
+import { Route as AuthenticatedPortalIndexRouteImport } from './routes/_authenticated/portal.index'
+import { Route as AuthenticatedPortalTeamRouteImport } from './routes/_authenticated/portal.team'
+import { Route as AuthenticatedPortalProfileRouteImport } from './routes/_authenticated/portal.profile'
+import { Route as AuthenticatedPortalInquiriesRouteImport } from './routes/_authenticated/portal.inquiries'
+import { Route as AuthenticatedPortalFilesRouteImport } from './routes/_authenticated/portal.files'
+import { Route as AuthenticatedPortalFilesFileIdRouteImport } from './routes/_authenticated/portal.files.$fileId'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedPortalRoute = AuthenticatedPortalRouteImport.update({
+  id: '/portal',
+  path: '/portal',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedPortalIndexRoute =
+  AuthenticatedPortalIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedPortalRoute,
+  } as any)
+const AuthenticatedPortalTeamRoute = AuthenticatedPortalTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => AuthenticatedPortalRoute,
+} as any)
+const AuthenticatedPortalProfileRoute =
+  AuthenticatedPortalProfileRouteImport.update({
+    id: '/profile',
+    path: '/profile',
+    getParentRoute: () => AuthenticatedPortalRoute,
+  } as any)
+const AuthenticatedPortalInquiriesRoute =
+  AuthenticatedPortalInquiriesRouteImport.update({
+    id: '/inquiries',
+    path: '/inquiries',
+    getParentRoute: () => AuthenticatedPortalRoute,
+  } as any)
+const AuthenticatedPortalFilesRoute =
+  AuthenticatedPortalFilesRouteImport.update({
+    id: '/files',
+    path: '/files',
+    getParentRoute: () => AuthenticatedPortalRoute,
+  } as any)
+const AuthenticatedPortalFilesFileIdRoute =
+  AuthenticatedPortalFilesFileIdRouteImport.update({
+    id: '/$fileId',
+    path: '/$fileId',
+    getParentRoute: () => AuthenticatedPortalFilesRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/contact': typeof ContactRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/portal': typeof AuthenticatedPortalRouteWithChildren
+  '/portal/files': typeof AuthenticatedPortalFilesRouteWithChildren
+  '/portal/inquiries': typeof AuthenticatedPortalInquiriesRoute
+  '/portal/profile': typeof AuthenticatedPortalProfileRoute
+  '/portal/team': typeof AuthenticatedPortalTeamRoute
+  '/portal/': typeof AuthenticatedPortalIndexRoute
+  '/portal/files/$fileId': typeof AuthenticatedPortalFilesFileIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/contact': typeof ContactRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/portal/files': typeof AuthenticatedPortalFilesRouteWithChildren
+  '/portal/inquiries': typeof AuthenticatedPortalInquiriesRoute
+  '/portal/profile': typeof AuthenticatedPortalProfileRoute
+  '/portal/team': typeof AuthenticatedPortalTeamRoute
+  '/portal': typeof AuthenticatedPortalIndexRoute
+  '/portal/files/$fileId': typeof AuthenticatedPortalFilesFileIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/contact': typeof ContactRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/_authenticated/portal': typeof AuthenticatedPortalRouteWithChildren
+  '/_authenticated/portal/files': typeof AuthenticatedPortalFilesRouteWithChildren
+  '/_authenticated/portal/inquiries': typeof AuthenticatedPortalInquiriesRoute
+  '/_authenticated/portal/profile': typeof AuthenticatedPortalProfileRoute
+  '/_authenticated/portal/team': typeof AuthenticatedPortalTeamRoute
+  '/_authenticated/portal/': typeof AuthenticatedPortalIndexRoute
+  '/_authenticated/portal/files/$fileId': typeof AuthenticatedPortalFilesFileIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/contact'
+    | '/sitemap.xml'
+    | '/portal'
+    | '/portal/files'
+    | '/portal/inquiries'
+    | '/portal/profile'
+    | '/portal/team'
+    | '/portal/'
+    | '/portal/files/$fileId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/contact'
+    | '/sitemap.xml'
+    | '/portal/files'
+    | '/portal/inquiries'
+    | '/portal/profile'
+    | '/portal/team'
+    | '/portal'
+    | '/portal/files/$fileId'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/contact'
+    | '/sitemap.xml'
+    | '/_authenticated/portal'
+    | '/_authenticated/portal/files'
+    | '/_authenticated/portal/inquiries'
+    | '/_authenticated/portal/profile'
+    | '/_authenticated/portal/team'
+    | '/_authenticated/portal/'
+    | '/_authenticated/portal/files/$fileId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  ContactRoute: typeof ContactRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +214,109 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/portal': {
+      id: '/_authenticated/portal'
+      path: '/portal'
+      fullPath: '/portal'
+      preLoaderRoute: typeof AuthenticatedPortalRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/portal/': {
+      id: '/_authenticated/portal/'
+      path: '/'
+      fullPath: '/portal/'
+      preLoaderRoute: typeof AuthenticatedPortalIndexRouteImport
+      parentRoute: typeof AuthenticatedPortalRoute
+    }
+    '/_authenticated/portal/team': {
+      id: '/_authenticated/portal/team'
+      path: '/team'
+      fullPath: '/portal/team'
+      preLoaderRoute: typeof AuthenticatedPortalTeamRouteImport
+      parentRoute: typeof AuthenticatedPortalRoute
+    }
+    '/_authenticated/portal/profile': {
+      id: '/_authenticated/portal/profile'
+      path: '/profile'
+      fullPath: '/portal/profile'
+      preLoaderRoute: typeof AuthenticatedPortalProfileRouteImport
+      parentRoute: typeof AuthenticatedPortalRoute
+    }
+    '/_authenticated/portal/inquiries': {
+      id: '/_authenticated/portal/inquiries'
+      path: '/inquiries'
+      fullPath: '/portal/inquiries'
+      preLoaderRoute: typeof AuthenticatedPortalInquiriesRouteImport
+      parentRoute: typeof AuthenticatedPortalRoute
+    }
+    '/_authenticated/portal/files': {
+      id: '/_authenticated/portal/files'
+      path: '/files'
+      fullPath: '/portal/files'
+      preLoaderRoute: typeof AuthenticatedPortalFilesRouteImport
+      parentRoute: typeof AuthenticatedPortalRoute
+    }
+    '/_authenticated/portal/files/$fileId': {
+      id: '/_authenticated/portal/files/$fileId'
+      path: '/$fileId'
+      fullPath: '/portal/files/$fileId'
+      preLoaderRoute: typeof AuthenticatedPortalFilesFileIdRouteImport
+      parentRoute: typeof AuthenticatedPortalFilesRoute
+    }
   }
 }
 
+interface AuthenticatedPortalFilesRouteChildren {
+  AuthenticatedPortalFilesFileIdRoute: typeof AuthenticatedPortalFilesFileIdRoute
+}
+
+const AuthenticatedPortalFilesRouteChildren: AuthenticatedPortalFilesRouteChildren =
+  {
+    AuthenticatedPortalFilesFileIdRoute: AuthenticatedPortalFilesFileIdRoute,
+  }
+
+const AuthenticatedPortalFilesRouteWithChildren =
+  AuthenticatedPortalFilesRoute._addFileChildren(
+    AuthenticatedPortalFilesRouteChildren,
+  )
+
+interface AuthenticatedPortalRouteChildren {
+  AuthenticatedPortalFilesRoute: typeof AuthenticatedPortalFilesRouteWithChildren
+  AuthenticatedPortalInquiriesRoute: typeof AuthenticatedPortalInquiriesRoute
+  AuthenticatedPortalProfileRoute: typeof AuthenticatedPortalProfileRoute
+  AuthenticatedPortalTeamRoute: typeof AuthenticatedPortalTeamRoute
+  AuthenticatedPortalIndexRoute: typeof AuthenticatedPortalIndexRoute
+}
+
+const AuthenticatedPortalRouteChildren: AuthenticatedPortalRouteChildren = {
+  AuthenticatedPortalFilesRoute: AuthenticatedPortalFilesRouteWithChildren,
+  AuthenticatedPortalInquiriesRoute: AuthenticatedPortalInquiriesRoute,
+  AuthenticatedPortalProfileRoute: AuthenticatedPortalProfileRoute,
+  AuthenticatedPortalTeamRoute: AuthenticatedPortalTeamRoute,
+  AuthenticatedPortalIndexRoute: AuthenticatedPortalIndexRoute,
+}
+
+const AuthenticatedPortalRouteWithChildren =
+  AuthenticatedPortalRoute._addFileChildren(AuthenticatedPortalRouteChildren)
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedPortalRoute: typeof AuthenticatedPortalRouteWithChildren
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedPortalRoute: AuthenticatedPortalRouteWithChildren,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
+  ContactRoute: ContactRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
