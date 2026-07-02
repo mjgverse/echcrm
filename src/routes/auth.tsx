@@ -108,7 +108,12 @@ function SignInForm() {
         <Input id="email-in" name="email" type="email" required autoComplete="email" />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="pw-in">Password</Label>
+        <div className="flex items-center justify-between">
+          <Label htmlFor="pw-in">Password</Label>
+          <Link to="/forgot-password" className="text-xs text-muted-foreground hover:text-foreground">
+            Forgot password?
+          </Link>
+        </div>
         <Input id="pw-in" name="password" type="password" required autoComplete="current-password" />
       </div>
       <Button type="submit" disabled={loading}>{loading ? "Signing in…" : "Sign in"}</Button>
