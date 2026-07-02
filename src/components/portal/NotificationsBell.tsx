@@ -10,7 +10,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
-import { formatRelative } from "@/lib/format";
+import { relativeTime } from "@/lib/format";
 
 type Notification = {
   id: string;
@@ -126,7 +126,7 @@ export function NotificationsBell() {
                           <div className="truncate text-xs text-muted-foreground">{n.body}</div>
                         )}
                         <div className="mt-0.5 text-[11px] text-muted-foreground">
-                          {formatRelative(n.created_at)}
+                          {relativeTime(n.created_at)}
                         </div>
                       </div>
                     </div>
