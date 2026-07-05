@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Facebook, Linkedin, Mail, Phone } from "lucide-react";
+import { Facebook, Linkedin, Mail, Phone, Youtube } from "lucide-react";
 import { SITE } from "@/lib/site-config";
 import { useAuth } from "@/lib/auth-context";
 
@@ -41,25 +41,39 @@ export function SiteFooter() {
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
               {SITE.description}
             </p>
-            <div className="mt-5 flex items-center gap-3">
-              <a
-                href={SITE.facebookUrl}
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Equity Holding Corp on Facebook"
-                className="grid h-9 w-9 place-items-center rounded-md border border-border/60 bg-background text-muted-foreground transition-colors hover:border-primary/40 hover:text-primary"
-              >
-                <Facebook className="h-4 w-4" />
-              </a>
-              <a
-                href={SITE.linkedinUrl}
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Equity Holding Corp on LinkedIn"
-                className="grid h-9 w-9 place-items-center rounded-md border border-border/60 bg-background text-muted-foreground transition-colors hover:border-primary/40 hover:text-primary"
-              >
-                <Linkedin className="h-4 w-4" />
-              </a>
+            <div className="mt-6">
+              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Follow us on our Social Channels
+              </p>
+              <div className="mt-3 flex items-center gap-3">
+                <a
+                  href={SITE.facebookUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Equity Holding Corp on Facebook"
+                  className="grid h-9 w-9 place-items-center rounded-md bg-primary text-primary-foreground transition-opacity hover:opacity-90"
+                >
+                  <Facebook className="h-4 w-4" fill="currentColor" strokeWidth={0} />
+                </a>
+                <a
+                  href={SITE.linkedinUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Equity Holding Corp on LinkedIn"
+                  className="grid h-9 w-9 place-items-center rounded-md bg-primary text-primary-foreground transition-opacity hover:opacity-90"
+                >
+                  <Linkedin className="h-4 w-4" fill="currentColor" strokeWidth={0} />
+                </a>
+                <a
+                  href={SITE.youtubeUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Equity Holding Corp on YouTube"
+                  className="grid h-9 w-9 place-items-center rounded-md bg-primary text-primary-foreground transition-opacity hover:opacity-90"
+                >
+                  <Youtube className="h-4 w-4" fill="currentColor" strokeWidth={0} />
+                </a>
+              </div>
             </div>
           </div>
 
