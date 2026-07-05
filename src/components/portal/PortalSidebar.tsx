@@ -42,12 +42,19 @@ export function PortalSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
-        <Link to="/portal" className="flex items-center gap-2 px-2 py-2">
-          <span className="grid h-8 w-8 place-items-center rounded-md bg-primary text-primary-foreground font-serif font-bold">
+        <div className="flex items-center gap-2 px-2 py-2">
+          <Link
+            to="/"
+            title="Back to site"
+            aria-label="Back to site"
+            className="grid h-8 w-8 shrink-0 place-items-center rounded-md bg-primary text-primary-foreground font-serif font-bold transition-opacity hover:opacity-90"
+          >
             E
-          </span>
-          <span className="font-serif font-semibold">EHC Portal</span>
-        </Link>
+          </Link>
+          <Link to="/portal" className="truncate font-serif font-semibold">
+            Equity Holding Corp
+          </Link>
+        </div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
