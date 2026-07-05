@@ -13,21 +13,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "@tanstack/react-router";
-import type { FilePriority } from "@/lib/format";
+import { CONCERN_OPTIONS, priorityForConcern, type FileConcern } from "@/lib/format";
 
 export function NewFileDialog() {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
-  const [priority, setPriority] = useState<FilePriority>("medium");
+  const [concern, setConcern] = useState<FileConcern | "">("");
   const [saving, setSaving] = useState(false);
   const qc = useQueryClient();
   const navigate = useNavigate();
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!user) return;
+    if (!user || !concern) return;
     setSaving(true);
     const { data: file, error } = await supabase
       .from("files")
@@ -35,7 +35,8 @@ export function NewFileDialog() {
         customer_id: user.id,
         subject: subject.trim(),
         status: "open",
-        priority,
+        concern,
+        priority: priorityForConcern(concern),
       })
       .select()
       .single();
@@ -55,7 +56,7 @@ export function NewFileDialog() {
     setOpen(false);
     setSubject("");
     setMessage("");
-    setPriority("medium");
+    setConcern("");
     toast.success("File created");
     qc.invalidateQueries({ queryKey: ["files"] });
     navigate({ to: "/portal/files/$fileId", params: { fileId: file.id } });
@@ -86,14 +87,13 @@ export function NewFileDialog() {
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="priority">Priority</Label>
-            <Select value={priority} onValueChange={(v) => setPriority(v as FilePriority)}>
-              <SelectTrigger id="priority"><SelectValue /></SelectTrigger>
+            <Label htmlFor="concern">Concern</Label>
+            <Select value={concern} onValueChange={(v) => setConcern(v as FileConcern)}>
+              <SelectTrigger id="concern"><SelectValue placeholder="Select a concern" /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="low">Low</SelectItem>
-                <SelectItem value="medium">Medium</SelectItem>
-                <SelectItem value="high">High</SelectItem>
-                <SelectItem value="urgent">Urgent</SelectItem>
+                {CONCERN_OPTIONS.map((c) => (
+                  <SelectItem key={c} value={c}>{c}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -110,7 +110,7 @@ export function NewFileDialog() {
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-            <Button type="submit" disabled={saving || !subject.trim()}>
+            <Button type="submit" disabled={saving || !subject.trim() || !concern}>
               {saving ? "Creating…" : "Create file"}
             </Button>
           </DialogFooter>

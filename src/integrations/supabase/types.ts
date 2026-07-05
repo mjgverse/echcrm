@@ -12,6 +12,31 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.5"
   }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       file_assignments: {
@@ -81,6 +106,7 @@ export type Database = {
       files: {
         Row: {
           assigned_to: string | null
+          concern: string | null
           created_at: string
           customer_id: string
           id: string
@@ -91,6 +117,7 @@ export type Database = {
         }
         Insert: {
           assigned_to?: string | null
+          concern?: string | null
           created_at?: string
           customer_id: string
           id?: string
@@ -101,6 +128,7 @@ export type Database = {
         }
         Update: {
           assigned_to?: string | null
+          concern?: string | null
           created_at?: string
           customer_id?: string
           id?: string
@@ -386,6 +414,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {
       app_role: ["customer", "admin"],

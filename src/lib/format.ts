@@ -43,3 +43,21 @@ export function formatDateTime(iso: string): string {
     timeStyle: "short",
   });
 }
+
+export const CONCERN_OPTIONS = [
+  "Asshat","Closing","COT","DEED","Default","Document","DocuSign","Homestead",
+  "Insurance","Invoice to do","Lawyer/Lawsuit","Lease","Misc","MOVE FWD","Notary",
+  "Pay people","Payoff Amount","Presentation","Refinance","Relinquishment",
+  "Self Service Switch","Servicing","Termination",
+] as const;
+
+export type FileConcern = typeof CONCERN_OPTIONS[number];
+
+const HIGH: FileConcern[] = ["Asshat","Closing","COT","DEED","Document","DocuSign","Notary"];
+const MEDIUM: FileConcern[] = ["Homestead","Insurance","Invoice to do","Lawyer/Lawsuit","Lease","Misc","MOVE FWD","Termination"];
+
+export function priorityForConcern(concern: FileConcern): FilePriority {
+  if (HIGH.includes(concern)) return "high";
+  if (MEDIUM.includes(concern)) return "medium";
+  return "low";
+}

@@ -22,7 +22,7 @@ import { Route as AuthenticatedPortalTeamRouteImport } from './routes/_authentic
 import { Route as AuthenticatedPortalProfileRouteImport } from './routes/_authenticated/portal.profile'
 import { Route as AuthenticatedPortalInquiriesRouteImport } from './routes/_authenticated/portal.inquiries'
 import { Route as AuthenticatedPortalFilesRouteImport } from './routes/_authenticated/portal.files'
-import { Route as AuthenticatedPortalFilesFileIdRouteImport } from './routes/_authenticated/portal.files.$fileId'
+import { Route as AuthenticatedPortalFilesFileIdRouteImport } from './routes/_authenticated/portal.files_.$fileId'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -94,9 +94,9 @@ const AuthenticatedPortalFilesRoute =
   } as any)
 const AuthenticatedPortalFilesFileIdRoute =
   AuthenticatedPortalFilesFileIdRouteImport.update({
-    id: '/$fileId',
-    path: '/$fileId',
-    getParentRoute: () => AuthenticatedPortalFilesRoute,
+    id: '/files_/$fileId',
+    path: '/files/$fileId',
+    getParentRoute: () => AuthenticatedPortalRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -107,7 +107,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/portal': typeof AuthenticatedPortalRouteWithChildren
-  '/portal/files': typeof AuthenticatedPortalFilesRouteWithChildren
+  '/portal/files': typeof AuthenticatedPortalFilesRoute
   '/portal/inquiries': typeof AuthenticatedPortalInquiriesRoute
   '/portal/profile': typeof AuthenticatedPortalProfileRoute
   '/portal/team': typeof AuthenticatedPortalTeamRoute
@@ -121,7 +121,7 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof ForgotPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/portal/files': typeof AuthenticatedPortalFilesRouteWithChildren
+  '/portal/files': typeof AuthenticatedPortalFilesRoute
   '/portal/inquiries': typeof AuthenticatedPortalInquiriesRoute
   '/portal/profile': typeof AuthenticatedPortalProfileRoute
   '/portal/team': typeof AuthenticatedPortalTeamRoute
@@ -138,12 +138,12 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/portal': typeof AuthenticatedPortalRouteWithChildren
-  '/_authenticated/portal/files': typeof AuthenticatedPortalFilesRouteWithChildren
+  '/_authenticated/portal/files': typeof AuthenticatedPortalFilesRoute
   '/_authenticated/portal/inquiries': typeof AuthenticatedPortalInquiriesRoute
   '/_authenticated/portal/profile': typeof AuthenticatedPortalProfileRoute
   '/_authenticated/portal/team': typeof AuthenticatedPortalTeamRoute
   '/_authenticated/portal/': typeof AuthenticatedPortalIndexRoute
-  '/_authenticated/portal/files/$fileId': typeof AuthenticatedPortalFilesFileIdRoute
+  '/_authenticated/portal/files_/$fileId': typeof AuthenticatedPortalFilesFileIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -190,7 +190,7 @@ export interface FileRouteTypes {
     | '/_authenticated/portal/profile'
     | '/_authenticated/portal/team'
     | '/_authenticated/portal/'
-    | '/_authenticated/portal/files/$fileId'
+    | '/_authenticated/portal/files_/$fileId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -296,44 +296,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPortalFilesRouteImport
       parentRoute: typeof AuthenticatedPortalRoute
     }
-    '/_authenticated/portal/files/$fileId': {
-      id: '/_authenticated/portal/files/$fileId'
-      path: '/$fileId'
+    '/_authenticated/portal/files_/$fileId': {
+      id: '/_authenticated/portal/files_/$fileId'
+      path: '/files/$fileId'
       fullPath: '/portal/files/$fileId'
       preLoaderRoute: typeof AuthenticatedPortalFilesFileIdRouteImport
-      parentRoute: typeof AuthenticatedPortalFilesRoute
+      parentRoute: typeof AuthenticatedPortalRoute
     }
   }
 }
 
-interface AuthenticatedPortalFilesRouteChildren {
-  AuthenticatedPortalFilesFileIdRoute: typeof AuthenticatedPortalFilesFileIdRoute
-}
-
-const AuthenticatedPortalFilesRouteChildren: AuthenticatedPortalFilesRouteChildren =
-  {
-    AuthenticatedPortalFilesFileIdRoute: AuthenticatedPortalFilesFileIdRoute,
-  }
-
-const AuthenticatedPortalFilesRouteWithChildren =
-  AuthenticatedPortalFilesRoute._addFileChildren(
-    AuthenticatedPortalFilesRouteChildren,
-  )
-
 interface AuthenticatedPortalRouteChildren {
-  AuthenticatedPortalFilesRoute: typeof AuthenticatedPortalFilesRouteWithChildren
+  AuthenticatedPortalFilesRoute: typeof AuthenticatedPortalFilesRoute
   AuthenticatedPortalInquiriesRoute: typeof AuthenticatedPortalInquiriesRoute
   AuthenticatedPortalProfileRoute: typeof AuthenticatedPortalProfileRoute
   AuthenticatedPortalTeamRoute: typeof AuthenticatedPortalTeamRoute
   AuthenticatedPortalIndexRoute: typeof AuthenticatedPortalIndexRoute
+  AuthenticatedPortalFilesFileIdRoute: typeof AuthenticatedPortalFilesFileIdRoute
 }
 
 const AuthenticatedPortalRouteChildren: AuthenticatedPortalRouteChildren = {
-  AuthenticatedPortalFilesRoute: AuthenticatedPortalFilesRouteWithChildren,
+  AuthenticatedPortalFilesRoute: AuthenticatedPortalFilesRoute,
   AuthenticatedPortalInquiriesRoute: AuthenticatedPortalInquiriesRoute,
   AuthenticatedPortalProfileRoute: AuthenticatedPortalProfileRoute,
   AuthenticatedPortalTeamRoute: AuthenticatedPortalTeamRoute,
   AuthenticatedPortalIndexRoute: AuthenticatedPortalIndexRoute,
+  AuthenticatedPortalFilesFileIdRoute: AuthenticatedPortalFilesFileIdRoute,
 }
 
 const AuthenticatedPortalRouteWithChildren =

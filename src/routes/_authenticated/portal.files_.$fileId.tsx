@@ -3,17 +3,21 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
-import { formatDateTime, relativeTime, STATUS_LABEL, PRIORITY_LABEL, type FilePriority, type FileStatus } from "@/lib/format";
+import { formatDateTime, relativeTime, STATUS_LABEL, PRIORITY_LABEL, CONCERN_OPTIONS, priorityForConcern, type FilePriority, type FileStatus, type FileConcern } from "@/lib/format";
 import { StatusBadge, PriorityBadge } from "@/components/portal/Badges";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { ArrowLeft, Send, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/_authenticated/portal/files/$fileId")({
+export const Route = createFileRoute("/_authenticated/portal/files_/$fileId")({
   component: FileDetail,
 });
 
@@ -22,6 +26,7 @@ type FileRow = {
   subject: string;
   status: FileStatus;
   priority: FilePriority;
+  concern: FileConcern;
   customer_id: string;
   assigned_to: string | null;
   created_at: string;
@@ -139,9 +144,12 @@ function FileDetail() {
       toast.error(error.message);
       return;
     }
-    // If file is new_inquiry or closed, bump to open on new message from customer
+
+    // Customer reply reopens a closed/new file. Admin reply on an open file moves it to In Progress.
     if (fileQuery.data?.status === "new_inquiry" || fileQuery.data?.status === "closed") {
       await supabase.from("files").update({ status: "open" }).eq("id", fileId);
+    } else if (isAdmin && fileQuery.data?.status === "open") {
+      await supabase.from("files").update({ status: "in_progress" }).eq("id", fileId);
     }
     setReply("");
     setPosting(false);
@@ -150,7 +158,14 @@ function FileDetail() {
     qc.invalidateQueries({ queryKey: ["files"] });
   }
 
-  async function updateField(patch: Partial<Pick<FileRow, "status" | "priority" | "assigned_to">>) {
+  async function closeCase() {
+    if (reply.trim()) {
+      await postReply();
+    }
+    await updateField({ status: "closed" });
+  }
+
+  async function updateField(patch: Partial<Pick<FileRow, "status" | "priority" | "assigned_to" | "concern">>) {
     const { error } = await supabase.from("files").update(patch).eq("id", fileId);
     if (error) return toast.error(error.message);
     if (patch.assigned_to !== undefined && user) {
@@ -198,6 +213,9 @@ function FileDetail() {
           <div className="flex flex-wrap items-center gap-2">
             <PriorityBadge priority={f.priority} />
             <StatusBadge status={f.status} />
+            <span className="rounded-full border px-2 py-0.5 text-xs text-muted-foreground">
+              {f.concern}
+            </span>
             <span className="ml-auto text-xs text-muted-foreground">
               updated {relativeTime(f.updated_at)}
             </span>
@@ -236,25 +254,54 @@ function FileDetail() {
               })
             )}
           </div>
-          <div className="border-t p-4">
-            <Textarea
-              value={reply}
-              onChange={(e) => setReply(e.target.value)}
-              placeholder="Post a reply to this file…"
-              rows={3}
-              maxLength={5000}
-              onKeyDown={(e) => {
-                if ((e.metaKey || e.ctrlKey) && e.key === "Enter") postReply();
-              }}
-            />
-            <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
-              <span>Cmd/Ctrl+Enter to send</span>
-              <Button size="sm" onClick={postReply} disabled={posting || !reply.trim()}>
-                <Send className="mr-1 h-4 w-4" />
-                {posting ? "Posting…" : "Post reply"}
-              </Button>
+          {f.status === "closed" ? (
+            <div className="border-t p-4 text-sm text-muted-foreground">
+              This file is closed. No further replies can be posted — the history above is still visible.
             </div>
-          </div>
+          ) : (
+            <div className="border-t p-4">
+              <Textarea
+                value={reply}
+                onChange={(e) => setReply(e.target.value)}
+                placeholder="Post a reply to this file…"
+                rows={3}
+                maxLength={5000}
+                onKeyDown={(e) => {
+                  if ((e.metaKey || e.ctrlKey) && e.key === "Enter") postReply();
+                }}
+              />
+              <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
+                <span>Cmd/Ctrl+Enter to send</span>
+                <div className="flex items-center gap-2">
+                  {isAdmin && (
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button size="sm" variant="destructive" disabled={posting}>
+                          Close case
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Close this case?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This marks the file as closed and notifies the customer. No further replies can be posted after closing.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>No</AlertDialogCancel>
+                          <AlertDialogAction onClick={closeCase}>Yes, close case</AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  )}
+                  <Button size="sm" onClick={postReply} disabled={posting || !reply.trim()}>
+                    <Send className="mr-1 h-4 w-4" />
+                    {posting ? "Posting…" : "Post reply"}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -284,6 +331,22 @@ function FileDetail() {
                 <SelectContent>
                   {(["new_inquiry", "open", "in_progress", "closed"] as FileStatus[]).map((s) => (
                     <SelectItem key={s} value={s}>{STATUS_LABEL[s]}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-2">
+              <Label>Concern</Label>
+              <Select
+                value={f.concern}
+                onValueChange={(v) =>
+                  updateField({ concern: v as FileConcern, priority: priorityForConcern(v as FileConcern) })
+                }
+              >
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {CONCERN_OPTIONS.map((c) => (
+                    <SelectItem key={c} value={c}>{c}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
