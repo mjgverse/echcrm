@@ -7,4 +7,7 @@ export const SITE = {
   calendlyUrl: "https://calendly.com/jeff-equityholdingcorp/15min",
   phone: "(800) 409-3444",
   contactEmail: "hello@equityholdingcorp.com",
+  facebookUrl: "https://www.facebook.com/equity.holdingcorp",
+  linkedinUrl: "https://www.linkedin.com/company/equity-holding-corp./",
+  youtubeUrl: "https://youtube.com",
 } as const;
