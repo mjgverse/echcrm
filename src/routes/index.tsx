@@ -2,7 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { ScheduleButton } from "@/components/site/ScheduleButton";
+import { Button } from "@/components/ui/button";
 import { SITE } from "@/lib/site-config";
+import { useAuth } from "@/lib/auth-context";
 import {
   ArrowRight,
   ClipboardCheck,
@@ -14,6 +16,7 @@ import {
   ShieldCheck,
   Sparkles,
   Clock,
+  LayoutDashboard,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
@@ -75,6 +78,7 @@ function AudienceSection({
 }
 
 function Landing() {
+  const { user } = useAuth();
   return (
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
@@ -96,13 +100,29 @@ function Landing() {
               investors can transact with confidence — start to finish.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
-              <ScheduleButton />
-              <Link
-                to="/contact"
-                className="inline-flex items-center gap-1 rounded-md px-4 py-2 text-sm font-medium text-foreground hover:text-primary"
-              >
-                Get started <ArrowRight className="h-4 w-4" />
-              </Link>
+              {user ? (
+                <Button
+                  asChild
+                  size="lg"
+                  className="bg-slate-900 text-white shadow-lg shadow-slate-900/20 hover:bg-slate-800"
+                >
+                  <Link to="/portal">
+                    <LayoutDashboard className="mr-1 h-4 w-4" />
+                    View Dashboard
+                  </Link>
+                </Button>
+              ) : (
+                <Button
+                  asChild
+                  size="lg"
+                  className="shadow-lg shadow-primary/30"
+                >
+                  <Link to="/auth">
+                    Get Started <ArrowRight className="ml-1 h-4 w-4" />
+                  </Link>
+                </Button>
+              )}
+              <ScheduleButton variant="outline" />
             </div>
             <div className="mt-10 grid grid-cols-3 gap-6 border-t pt-6 text-sm">
               <div>
