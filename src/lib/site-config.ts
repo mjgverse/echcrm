@@ -1,6 +1,6 @@
 export const SITE = {
-  name: "EHC CRM Beta",
-  brandShort: "EHC",
+  name: "Equity Holding Corp",
+  brandShort: "Equity Holding Corp",
   tagline: "Flat-fee transaction coordination for real estate professionals",
   description:
     "One organized file per transaction, one owner, one clear status. Stop chasing CC chains — coordinate every deal in one place.",
