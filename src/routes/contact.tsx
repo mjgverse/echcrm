@@ -10,9 +10,9 @@ export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
       { title: `Contact — ${SITE.name}` },
-      { name: "description", content: `Tell us about your transaction. We'll follow up within one business day.` },
+      { name: "description", content: `Tell us about your situation. We'll follow up within one business day.` },
       { property: "og:title", content: `Contact — ${SITE.name}` },
-      { property: "og:description", content: `Tell us about your transaction. We'll follow up within one business day.` },
+      { property: "og:description", content: `Tell us about your situation. We'll follow up within one business day.` },
     ],
   }),
   component: ContactPage,
@@ -29,8 +29,8 @@ function ContactPage() {
               Get in touch
             </h1>
             <p className="mt-3 max-w-2xl text-lg text-muted-foreground">
-              New to us? Send a quick note — we'll follow up within one business day. Already a
-              client? Sign in to your portal to keep everything on the file.
+              New to us? Send a quick note about your situation — we'll follow up within one
+              business day. Already a client? Sign in to your portal to keep everything on file.
             </p>
           </div>
         </section>

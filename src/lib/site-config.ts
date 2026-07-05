@@ -1,10 +1,10 @@
 export const SITE = {
   name: "Equity Holding Corp",
   brandShort: "Equity Holding Corp",
-  tagline: "Flat-fee transaction coordination for real estate professionals",
+  tagline: "Independent trustee services that protect every party in a real estate transfer",
   description:
-    "One organized file per transaction, one owner, one clear status. Stop chasing CC chains — coordinate every deal in one place.",
+    "Equity Holding Corp is a professional, independent trustee protecting homeowners, buyers, investors, and their advisors through our proprietary Consumer Protection Trust™.",
   calendlyUrl: "https://calendly.com/jeff-equityholdingcorp/15min",
-  phone: "(555) 123-4567",
-  contactEmail: "hello@ehccrm.example",
+  phone: "(800) 409-3444",
+  contactEmail: "hello@equityholdingcorp.com",
 } as const;

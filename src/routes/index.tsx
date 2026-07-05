@@ -10,7 +10,7 @@ import {
   Home as HomeIcon,
   Briefcase,
   Scale,
-  MessageSquare,
+  KeyRound,
   ShieldCheck,
   Sparkles,
   Clock,
@@ -84,15 +84,16 @@ function Landing() {
         <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-20 sm:px-6 md:grid-cols-[1.1fr_1fr] md:py-28">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border bg-background px-3 py-1 text-xs uppercase tracking-wider text-muted-foreground">
-              <Sparkles className="h-3.5 w-3.5 text-primary" /> Flat-fee transaction coordination
+              <Sparkles className="h-3.5 w-3.5 text-primary" /> Independent Trustee Services
             </div>
             <h1 className="mt-4 font-serif text-4xl font-semibold tracking-tight sm:text-5xl md:text-6xl">
-              Every deal in one place.
-              <span className="block text-primary">No more CC chains.</span>
+              Real protection for every party in the deal.
+              <span className="block text-primary">Not just paperwork.</span>
             </h1>
             <p className="mt-5 max-w-xl text-lg text-muted-foreground">
-              We coordinate your real estate transactions from contract to close — one file, one
-              owner, one clear status. So nothing slips.
+              Equity Holding Corp is a professional, independent trustee. Through our Consumer
+              Protection Trust™, we hold and safeguard property title so buyers, sellers, and
+              investors can transact with confidence — start to finish.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <ScheduleButton />
@@ -106,15 +107,15 @@ function Landing() {
             <div className="mt-10 grid grid-cols-3 gap-6 border-t pt-6 text-sm">
               <div>
                 <div className="font-serif text-2xl font-semibold">25+</div>
-                <div className="text-muted-foreground">years in real estate</div>
+                <div className="text-muted-foreground">years as a trustee</div>
               </div>
               <div>
                 <div className="font-serif text-2xl font-semibold">3,000+</div>
-                <div className="text-muted-foreground">transactions handled</div>
+                <div className="text-muted-foreground">properties held in trust</div>
               </div>
               <div>
-                <div className="font-serif text-2xl font-semibold">Flat-fee</div>
-                <div className="text-muted-foreground">no per-email surprises</div>
+                <div className="font-serif text-2xl font-semibold">Flat fee</div>
+                <div className="text-muted-foreground">no hidden costs</div>
               </div>
             </div>
           </div>
@@ -132,31 +133,31 @@ function Landing() {
       </section>
 
       <AudienceSection
-        eyebrow="For Real Estate Agents"
-        title="Focus on selling. We'll handle the paperwork."
-        body="From executed contract through closing, we manage every deadline, disclosure, and signature — so you can stay in front of clients instead of drowning in email."
-        icon={Briefcase}
-      />
-      <AudienceSection
-        bg="warm"
-        reversed
-        eyebrow="For Brokerages"
-        title="Consistent transactions across every agent."
-        body="Give your team a single coordinator workflow. Every file follows the same checklist, tracked in one portal — no more guessing who's chasing what."
-        icon={Users}
-      />
-      <AudienceSection
-        eyebrow="For Investors"
-        title="Move faster on high-volume deals."
-        body="Whether you're closing one or fifty, our flat-fee coordination scales with you. You'll always know exactly where a file stands — no digging through inboxes."
+        eyebrow="For Homeowners & Sellers"
+        title="Protect the asset you've worked hardest for."
+        body="Our Consumer Protection Trust™ holds your property's title securely through the life of a sale — keeping your equity and your privacy protected until every condition of the transfer is actually met."
         icon={HomeIcon}
       />
       <AudienceSection
         bg="warm"
         reversed
-        eyebrow="For Legal & Escrow"
-        title="A single thread per file. Full audit trail."
-        body="Every document, every message, every status change lives on the file. Reply in the portal and every party sees it — no orphaned CC chains."
+        eyebrow="For Home Buyers"
+        title="Ownership with real safeguards, not just a signature."
+        body="When you buy through a title-holding trust, an independent trustee — never a friend, a relative, or the other party to the deal — holds title until your agreement is fully satisfied."
+        icon={KeyRound}
+      />
+      <AudienceSection
+        eyebrow="For Investors"
+        title="Build a track record, not just a portfolio."
+        body="Serious investors use our trust structure to keep every transaction transparent and above board, protecting sellers, buyers, and their own reputation on every deal they close."
+        icon={Briefcase}
+      />
+      <AudienceSection
+        bg="warm"
+        reversed
+        eyebrow="For Real Estate & Legal Professionals"
+        title="A trustee you can put your name behind."
+        body="We're an independent, professional trustee for the Consumer Protection Trust™ — structured around the Garn-St. Germain Act and Dodd-Frank, so you can recommend us to clients with confidence."
         icon={Scale}
       />
 
@@ -168,40 +169,40 @@ function Landing() {
               Why we're different
             </h2>
             <p className="mt-3 text-muted-foreground">
-              Most coordination happens in email. That's exactly the problem.
+              Not every trust — or every trustee — actually protects you. Ours is built to.
             </p>
           </div>
           <div className="mt-12 grid gap-6 md:grid-cols-3">
             {[
               {
-                icon: MessageSquare,
-                title: "One thread per file",
-                body: "Every agent, coordinator, and party posts to the same running conversation. No CC-all replies, no missed forwards.",
-              },
-              {
                 icon: ShieldCheck,
-                title: "Clear ownership",
-                body: "Each file has one assigned coordinator. You always know whose job it is — and so do they.",
-              },
-              {
-                icon: Clock,
-                title: "Priority you can see",
-                body: "Urgent files are color-coded. Anything about to slip is visible at a glance — not buried in an inbox.",
+                title: "Truly independent",
+                body: "We're a neutral third party — never a friend, relative, or business partner of either side — so the trust actually holds up when it matters.",
               },
               {
                 icon: ClipboardCheck,
-                title: "Full audit trail",
-                body: "Every status change, every assignment, every message is timestamped and stored on the file.",
+                title: "Attorney-reviewed documents",
+                body: "Every trust agreement and disclosure is prepared and reviewed by legal counsel, not assembled from a generic template.",
               },
               {
                 icon: Sparkles,
-                title: "Flat, predictable pricing",
-                body: "One fee per file. Not per email, not per phone call. What you see is what you pay.",
+                title: "Flat, transparent pricing",
+                body: "One trustee fee, paid annually. No hidden costs and no surprises buried in the fine print.",
+              },
+              {
+                icon: Scale,
+                title: "Built for compliance",
+                body: "Our structure is designed around the Garn-St. Germain Act and Dodd-Frank, protecting every party from due-on-sale exposure.",
+              },
+              {
+                icon: Clock,
+                title: "25 years, proven in practice",
+                body: "Our trust structure has stood up to real-world scrutiny for decades — tested, not theoretical.",
               },
               {
                 icon: Users,
-                title: "Real humans, no bots",
-                body: "You're working with experienced coordinators — not an AI, not an offshore chat window.",
+                title: "Real people, real accountability",
+                body: "You work directly with our team — a bonded, licensed, and insured trustee, not a call center or a bot.",
               },
             ].map((c) => (
               <div key={c.title} className="rounded-xl border bg-card p-6 shadow-sm">
@@ -223,11 +224,11 @@ function Landing() {
       <section className="border-y bg-primary text-primary-foreground">
         <div className="mx-auto flex max-w-5xl flex-col items-center gap-6 px-4 py-16 text-center sm:px-6">
           <h2 className="font-serif text-3xl font-semibold tracking-tight sm:text-4xl">
-            Ready to stop chasing email chains?
+            Ready for real protection on your next transfer?
           </h2>
           <p className="max-w-xl text-primary-foreground/90">
-            Book a 15-minute consultation. We'll walk you through how a file flows from contract to
-            close in our portal.
+            Book a 15-minute consultation and we'll walk you through exactly how our trust
+            structure protects your property, your equity, and your peace of mind.
           </p>
           <ScheduleButton variant="outline" className="border-primary-foreground bg-transparent text-primary-foreground hover:bg-primary-foreground hover:text-primary" />
         </div>
