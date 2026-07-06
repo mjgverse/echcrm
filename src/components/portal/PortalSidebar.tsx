@@ -48,9 +48,9 @@ export function PortalSidebar() {
             to="/"
             title="Back to site"
             aria-label="Back to site"
-            className="grid h-8 w-8 shrink-0 place-items-center rounded-md bg-primary text-primary-foreground font-serif font-bold transition-opacity hover:opacity-90"
+            className="grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-md transition-opacity hover:opacity-90"
           >
-            E
+            <img src="/logo-icon.png" alt="" className="h-8 w-8 object-contain" />
           </Link>
           <Link to="/portal" className="truncate font-serif font-semibold">
             Equity Holding Corp
