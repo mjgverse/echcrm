@@ -32,22 +32,28 @@ export const Route = createFileRoute("/")({
 });
 
 function AudienceSection({
+  id,
   eyebrow,
   title,
   body,
   icon: Icon,
   reversed,
   bg,
+  image,
+  imageAlt,
 }: {
+  id?: string;
   eyebrow: string;
   title: string;
   body: string;
   icon: React.ComponentType<{ className?: string }>;
   reversed?: boolean;
   bg?: "warm" | "plain";
+  image: string;
+  imageAlt: string;
 }) {
   return (
-    <section className={bg === "warm" ? "bg-secondary/60" : ""}>
+    <section id={id} className={`scroll-mt-16 ${bg === "warm" ? "bg-secondary/60" : ""}`}>
       <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 sm:px-6 md:grid-cols-2 md:gap-16 md:py-24">
         <div className={reversed ? "md:order-2" : ""}>
           <div className="inline-flex items-center gap-2 rounded-full border bg-background px-3 py-1 text-xs uppercase tracking-wider text-muted-foreground">
@@ -63,13 +69,8 @@ function AudienceSection({
           </div>
         </div>
         <div className={reversed ? "md:order-1" : ""}>
-          <div
-            className="aspect-[4/3] w-full overflow-hidden rounded-2xl border bg-muted"
-            data-image-placeholder
-          >
-            <div className="flex h-full w-full items-center justify-center text-sm text-muted-foreground">
-              image_{Math.floor(Math.random() * 100)}.jpg
-            </div>
+          <div className="aspect-[4/3] w-full overflow-hidden rounded-2xl border bg-muted">
+            <img src={image} alt={imageAlt} className="h-full w-full object-cover" loading="lazy" />
           </div>
         </div>
       </div>
@@ -140,45 +141,56 @@ function Landing() {
             </div>
           </div>
           <div>
-            <div
-              className="aspect-[4/5] w-full overflow-hidden rounded-2xl border shadow-lg"
-              data-image-placeholder
-            >
-              <div className="flex h-full w-full items-center justify-center bg-muted text-sm text-muted-foreground">
-                image_hero.jpg
-              </div>
+            <div className="aspect-[4/5] w-full overflow-hidden rounded-2xl border shadow-lg">
+              <img
+                src="/images/hero.jpg"
+                alt="Equity Holding Corp trustee reviewing documents with clients"
+                className="h-full w-full object-cover"
+              />
             </div>
           </div>
         </div>
       </section>
 
       <AudienceSection
+        id="sellers"
         eyebrow="For Homeowners & Sellers"
         title="Protect the asset you've worked hardest for."
         body="Our Consumer Protection Trust™ holds your property's title securely through the life of a sale — keeping your equity and your privacy protected until every condition of the transfer is actually met."
         icon={HomeIcon}
+        image="/images/sellers.jpg"
+        imageAlt="Homeowner discussing a sale with an Equity Holding Corp representative"
       />
       <AudienceSection
+        id="buyers"
         bg="warm"
         reversed
         eyebrow="For Home Buyers"
         title="Ownership with real safeguards, not just a signature."
         body="When you buy through a title-holding trust, an independent trustee — never a friend, a relative, or the other party to the deal — holds title until your agreement is fully satisfied."
         icon={KeyRound}
+        image="/images/buyers.jpg"
+        imageAlt="Home buyer touring a property with an Equity Holding Corp representative"
       />
       <AudienceSection
+        id="investors"
         eyebrow="For Investors"
         title="Build a track record, not just a portfolio."
         body="Serious investors use our trust structure to keep every transaction transparent and above board, protecting sellers, buyers, and their own reputation on every deal they close."
         icon={Briefcase}
+        image="/images/investors.jpg"
+        imageAlt="Real estate investors reviewing a trust agreement"
       />
       <AudienceSection
+        id="professionals"
         bg="warm"
         reversed
         eyebrow="For Real Estate & Legal Professionals"
         title="A trustee you can put your name behind."
         body="We're an independent, professional trustee for the Consumer Protection Trust™ — structured around the Garn-St. Germain Act and Dodd-Frank, so you can recommend us to clients with confidence."
         icon={Scale}
+        image="/images/professionals.jpg"
+        imageAlt="Real estate and legal professionals in a meeting with an Equity Holding Corp trustee"
       />
 
       {/* Why we're different */}
