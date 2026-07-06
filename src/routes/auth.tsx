@@ -32,9 +32,8 @@ function AuthPage() {
   return (
     <div className="grid min-h-screen md:grid-cols-2">
       <div className="hidden bg-secondary/70 md:flex md:flex-col md:justify-between md:p-10">
-        <Link to="/" className="flex items-center gap-2">
-          <span className="grid h-9 w-9 place-items-center rounded-md bg-primary text-primary-foreground font-serif font-bold">E</span>
-          <span className="font-serif text-lg font-semibold">{SITE.name}</span>
+        <Link to="/" className="flex items-center">
+          <img src="/logo-full.png" alt={SITE.name} className="h-10 w-auto" />
         </Link>
         <div className="max-w-md">
           <h2 className="font-serif text-3xl font-semibold tracking-tight">
