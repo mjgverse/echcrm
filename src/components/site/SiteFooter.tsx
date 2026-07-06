@@ -30,13 +30,8 @@ export function SiteFooter() {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {/* Company */}
           <div className="sm:col-span-2 lg:col-span-1">
-            <Link to="/" className="flex items-center gap-2">
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-primary text-primary-foreground font-serif text-lg font-bold">
-                E
-              </span>
-              <span className="font-serif text-lg font-semibold tracking-tight text-foreground">
-                {SITE.name}
-              </span>
+            <Link to="/" className="flex items-center">
+              <img src="/logo-full.png" alt={SITE.name} className="h-10 w-auto" />
             </Link>
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
               {SITE.description}
