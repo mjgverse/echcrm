@@ -44,11 +44,8 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/85 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
-        <Link to="/" className="flex items-center gap-2">
-          <span className="grid h-9 w-9 place-items-center rounded-md bg-primary text-primary-foreground font-serif text-lg font-bold">
-            E
-          </span>
-          <span className="font-serif text-lg font-semibold tracking-tight">{SITE.name}</span>
+        <Link to="/" className="flex items-center">
+          <img src="/logo-full.png" alt={SITE.name} className="h-10 w-auto" />
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
