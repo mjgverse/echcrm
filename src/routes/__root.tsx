@@ -109,6 +109,7 @@ function RootShell({ children }: { children: ReactNode }) {
       </head>
       <body>
         {children}
+        <script src="https://aiehc.vercel.app/api/widget"></script>
         <Scripts />
       </body>
     </html>
