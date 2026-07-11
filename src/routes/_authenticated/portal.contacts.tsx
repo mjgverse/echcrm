@@ -40,10 +40,11 @@ function ContactsPage() {
     }
   }, [selectedContact])
 
-  async function fetchContacts() {
+async function fetchContacts() {
     try {
+      // Change 'profiles' to 'contacts' here
       const { data, error } = await supabase
-        .from('profiles')
+        .from('contacts')
         .select('*')
 
       if (error) throw error
@@ -54,7 +55,6 @@ function ContactsPage() {
       setLoading(false)
     }
   }
-
   // Local UI Actions (Prototype Mode)
   const handleDeleteLocal = (id: string) => {
     if (confirmInput === 'CONFIRM') {
