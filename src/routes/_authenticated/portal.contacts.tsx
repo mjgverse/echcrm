@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
-import { supabase } from '@/lib/supabase' // Ensure this matches your supabase client path
+import { supabase } from '@/lib/supabase'
 
 export const Route = createFileRoute('/_authenticated/portal/contacts')({
   component: ContactsPage,
@@ -9,25 +9,36 @@ export const Route = createFileRoute('/_authenticated/portal/contacts')({
 function ContactsPage() {
   const [contacts, setContacts] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   useEffect(() => {
+    console.log("=== Contacts Page Mounted ===")
+    console.log("Supabase client instance:", supabase)
     fetchContacts()
   }, [])
 
   async function fetchContacts() {
     try {
+      console.log("Starting Supabase fetch from 'profiles'...")
+      
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('is_visible', true)
-        .order('first_name', { ascending: true }) // Alphabetical A-Z
+        .order('id', { ascending: true }) // Simplified sort to rule out column name issues
 
-      if (error) throw error
+      console.log("Supabase response received:", { data, error })
+
+      if (error) {
+        setErrorMessage(error.message)
+        throw error
+      }
       
       setContacts(data || [])
-    } catch (error) {
-      console.error("Error fetching contacts:", error)
+    } catch (error: any) {
+      console.error("Caught fetch error:", error)
+      setErrorMessage(error?.message || String(error))
     } finally {
+      console.log("Fetch sequence finished. Setting loading to false.")
       setLoading(false)
     }
   }
@@ -35,44 +46,30 @@ function ContactsPage() {
   return (
     <div className="flex flex-col gap-6 p-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Contacts</h1>
-        <p className="text-muted-foreground">
-          Directory of all registered members.
-        </p>
+        <h1 className="text-2xl font-bold tracking-tight">Contacts (Debug Mode)</h1>
+        <p className="text-muted-foreground">Looking for database connection...</p>
       </div>
       
-      <div className="border rounded-lg bg-white overflow-hidden shadow-sm">
-        {loading ? (
-          <div className="p-8 text-center text-muted-foreground">Loading contacts...</div>
-        ) : (
-          <table className="w-full text-sm text-left">
-            <thead className="bg-gray-50 border-b">
-              <tr>
-                <th className="px-6 py-3 font-medium text-gray-900">Name</th>
-                <th className="px-6 py-3 font-medium text-gray-900">Email</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y">
-              {contacts.length === 0 ? (
-                <tr>
-                  <td colSpan={2} className="px-6 py-8 text-center text-muted-foreground">
-                    No active contacts found.
-                  </td>
-                </tr>
-              ) : (
-                contacts.map((contact) => (
-                  <tr key={contact.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 font-medium text-gray-900">
-                      {contact.first_name} {contact.last_name}
-                    </td>
-                    <td className="px-6 py-4 text-gray-600">
-                      {contact.email}
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+      <div className="border rounded-lg bg-white overflow-hidden shadow-sm p-6">
+        {loading && (
+          <div className="text-center text-gray-500 animate-pulse">
+            Loading contacts... Check your browser console logs!
+          </div>
+        )}
+
+        {errorMessage && (
+          <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-md text-sm mb-4">
+            <strong>Database Error:</strong> {errorMessage}
+          </div>
+        )}
+
+        {!loading && !errorMessage && (
+          <div>
+            <p className="text-green-600 font-medium mb-2">Success! Connected to profiles.</p>
+            <pre className="bg-gray-50 p-4 rounded border text-xs overflow-auto max-h-60">
+              {JSON.stringify(contacts, null, 2)}
+            </pre>
+          </div>
         )}
       </div>
     </div>
