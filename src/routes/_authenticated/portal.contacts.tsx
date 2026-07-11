@@ -49,7 +49,7 @@ function ContactsPage() {
     }
   }
 
-  // Local UI Actions (Prototype Mode) - FIXED WITH CONST DECLARATIONS
+  // Local UI Actions (Prototype Mode)
   const handleDeleteLocal = (id: string) => {
     const confirmed = window.confirm("Are you sure you want to remove this contact from the CRM view?")
     if (confirmed) {
@@ -69,7 +69,7 @@ function ContactsPage() {
           first_name: editFirstName,
           last_name: editLastName,
           email: editEmail,
-          updated_at: new Date().toISOString() // Simulates database timestamp
+          updated_at: new Date().toISOString()
         }
       }
       return c
@@ -320,7 +320,7 @@ function ContactsPage() {
               )}
             </div>
 
-            {/* Bottom Form Actions Control Bar */}
+            {/* Bottom Form Actions Control Bar - FIXED WITH 50/50 SAFE SPLIT & SWAPPED ORDER */}
             <div className="border-t pt-4 mt-auto flex flex-col gap-2">
               {isEditing ? (
                 <div className="flex gap-2">
@@ -332,7 +332,7 @@ function ContactsPage() {
                   </button>
                   <button
                     onClick={() => setIsEditing(false)}
-                    className="border rounded-md text-sm font-medium py-2 px-3 hover:bg-gray-50 transition-colors"
+                    className="flex-1 border rounded-md text-sm font-medium py-2 px-3 hover:bg-gray-50 transition-colors"
                   >
                     Cancel
                   </button>
@@ -340,16 +340,16 @@ function ContactsPage() {
               ) : (
                 <div className="flex gap-2">
                   <button
+                    onClick={() => handleDeleteLocal(selectedContact.id)}
+                    className="flex-1 border border-red-200 rounded-md text-sm font-medium py-2 px-3 flex items-center justify-center gap-1.5 bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
+                  >
+                    <Trash2 className="h-4 w-4" /> Delete
+                  </button>
+                  <button
                     onClick={() => setIsEditing(true)}
                     className="flex-1 border border-gray-300 rounded-md text-sm font-medium py-2 px-3 flex items-center justify-center gap-1.5 hover:bg-gray-50 transition-colors text-gray-700"
                   >
                     <Edit3 className="h-4 w-4" /> Edit Profile
-                  </button>
-                  <button
-                    onClick={() => handleDeleteLocal(selectedContact.id)}
-                    className="border border-red-200 rounded-md text-sm font-medium py-2 px-3 flex items-center justify-center gap-1.5 bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
-                  >
-                    <Trash2 className="h-4 w-4" /> Delete
                   </button>
                 </div>
               )}
