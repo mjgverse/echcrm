@@ -49,8 +49,8 @@ function ContactsPage() {
     }
   }
 
-  // Local UI Actions (Prototype Mode)
-  handleDeleteLocal = (id: string) => {
+  // Local UI Actions (Prototype Mode) - FIXED WITH CONST DECLARATIONS
+  const handleDeleteLocal = (id: string) => {
     const confirmed = window.confirm("Are you sure you want to remove this contact from the CRM view?")
     if (confirmed) {
       setContacts(prev => prev.filter(c => c.id !== id))
@@ -58,7 +58,7 @@ function ContactsPage() {
     }
   }
 
-  handleSaveLocal = () => {
+  const handleSaveLocal = () => {
     if (!selectedContact) return
     
     // Update the item inside our local state array
