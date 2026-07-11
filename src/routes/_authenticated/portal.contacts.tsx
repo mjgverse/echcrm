@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState, useEffect, useMemo } from 'react'
 import { supabase } from '@/integrations/supabase/client'
-import { Search, X, User, Mail, Shield, Clock } from 'lucide-react'
+import { Search, X, User, Mail, Shield, Clock, Trash2, Edit3, Check } from 'lucide-react'
 
 export const Route = createFileRoute('/_authenticated/portal/contacts')({
   component: ContactsPage,
@@ -13,12 +13,26 @@ function ContactsPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [perPage, setPerPage] = useState(20)
   
-  // New state to track the active clicked contact drawer
+  // Drawer & Interaction State
   const [selectedContact, setSelectedContact] = useState<any | null>(null)
+  const [isEditing, setIsEditing] = useState(false)
+  const [editFirstName, setEditFirstName] = useState('')
+  const [editLastName, setEditLastName] = useState('')
+  const [editEmail, setEditEmail] = useState('')
 
   useEffect(() => {
     fetchContacts()
   }, [])
+
+  // Watch for contact selection to populate edit form fields
+  useEffect(() => {
+    if (selectedContact) {
+      setEditFirstName(selectedContact.first_name || '')
+      setEditLastName(selectedContact.last_name || '')
+      setEditEmail(selectedContact.email || '')
+      setIsEditing(false)
+    }
+  }, [selectedContact])
 
   async function fetchContacts() {
     try {
@@ -33,6 +47,44 @@ function ContactsPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  // Local UI Actions (Prototype Mode)
+  handleDeleteLocal = (id: string) => {
+    const confirmed = window.confirm("Are you sure you want to remove this contact from the CRM view?")
+    if (confirmed) {
+      setContacts(prev => prev.filter(c => c.id !== id))
+      setSelectedContact(null)
+    }
+  }
+
+  handleSaveLocal = () => {
+    if (!selectedContact) return
+    
+    // Update the item inside our local state array
+    setContacts(prev => prev.map(c => {
+      if (c.id === selectedContact.id) {
+        return {
+          ...c,
+          first_name: editFirstName,
+          last_name: editLastName,
+          email: editEmail,
+          updated_at: new Date().toISOString() // Simulates database timestamp
+        }
+      }
+      return c
+    }))
+
+    // Update the currently viewed drawer profile preview
+    setSelectedContact(prev => ({
+      ...prev,
+      first_name: editFirstName,
+      last_name: editLastName,
+      email: editEmail,
+      updated_at: new Date().toISOString()
+    }))
+
+    setIsEditing(false)
   }
 
   const displayedContacts = useMemo(() => {
@@ -57,7 +109,7 @@ function ContactsPage() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Contacts</h1>
         <p className="text-muted-foreground">
-          Directory of all registered members. Click a row to view full details.
+          Directory of all registered members. Click a row to view or modify details.
         </p>
       </div>
       
@@ -156,7 +208,9 @@ function ContactsPage() {
       }`}>
         {/* Drawer Header */}
         <div className="flex items-center justify-between border-b pb-4">
-          <h2 className="text-lg font-bold text-gray-900">Contact Details</h2>
+          <h2 className="text-lg font-bold text-gray-900">
+            {isEditing ? 'Modify Contact Attributes' : 'Contact Details'}
+          </h2>
           <button 
             onClick={() => setSelectedContact(null)}
             className="p-1.5 hover:bg-gray-100 rounded-md transition-colors text-gray-500 hover:text-black"
@@ -168,14 +222,14 @@ function ContactsPage() {
         {/* Drawer Content */}
         {selectedContact && (
           <div className="flex flex-col gap-6 overflow-y-auto flex-1">
-            {/* Avatar Header */}
+            {/* Avatar Header Block */}
             <div className="flex items-center gap-4 bg-gray-50 p-4 rounded-xl border">
               <div className="h-14 w-14 rounded-full bg-black text-white flex items-center justify-center font-bold text-xl uppercase shadow-sm">
-                {(selectedContact.first_name?.[0] || selectedContact.full_name?.[0] || 'U')}
+                {(editFirstName?.[0] || selectedContact.full_name?.[0] || 'U')}
               </div>
               <div>
                 <h3 className="text-base font-semibold text-gray-900">
-                  {`${selectedContact.first_name || ''} ${selectedContact.last_name || ''}`.trim() || selectedContact.full_name || 'Unnamed Member'}
+                  {isEditing ? 'Editing Mode' : (`${selectedContact.first_name || ''} ${selectedContact.last_name || ''}`.trim() || selectedContact.full_name || 'Unnamed Member')}
                 </h3>
                 <p className="text-xs text-muted-foreground font-mono truncate max-w-[240px]">
                   ID: {selectedContact.id}
@@ -183,27 +237,63 @@ function ContactsPage() {
               </div>
             </div>
 
-            {/* Structured Details Grid */}
+            {/* Profile Fields Details */}
             <div className="flex flex-col gap-4">
               <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Metadata Profile</h4>
               
-              <div className="flex items-start gap-3 p-3 rounded-lg border bg-white shadow-sm">
-                <User className="h-5 w-5 text-gray-400 mt-0.5" />
-                <div className="flex flex-col text-sm">
-                  <span className="text-gray-500 text-xs">Full Legal Name</span>
-                  <span className="font-medium text-gray-900">
-                    {selectedContact.full_name || `${selectedContact.first_name || ''} ${selectedContact.last_name || ''}`.trim() || 'N/A'}
-                  </span>
+              {isEditing ? (
+                /* Interactive Edit Form Fields */
+                <div className="flex flex-col gap-3">
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs font-medium text-gray-600">First Name</label>
+                    <input 
+                      type="text" 
+                      value={editFirstName} 
+                      onChange={(e) => setEditFirstName(e.target.value)}
+                      className="border rounded-md px-3 py-2 text-sm bg-white w-full focus:outline-none focus:ring-2 focus:ring-black"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs font-medium text-gray-600">Last Name</label>
+                    <input 
+                      type="text" 
+                      value={editLastName} 
+                      onChange={(e) => setEditLastName(e.target.value)}
+                      className="border rounded-md px-3 py-2 text-sm bg-white w-full focus:outline-none focus:ring-2 focus:ring-black"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs font-medium text-gray-600">Email Address</label>
+                    <input 
+                      type="email" 
+                      value={editEmail} 
+                      onChange={(e) => setEditEmail(e.target.value)}
+                      className="border rounded-md px-3 py-2 text-sm bg-white w-full focus:outline-none focus:ring-2 focus:ring-black"
+                    />
+                  </div>
                 </div>
-              </div>
+              ) : (
+                /* Standard Display Cards */
+                <>
+                  <div className="flex items-start gap-3 p-3 rounded-lg border bg-white shadow-sm">
+                    <User className="h-5 w-5 text-gray-400 mt-0.5" />
+                    <div className="flex flex-col text-sm">
+                      <span className="text-gray-500 text-xs">Full Legal Name</span>
+                      <span className="font-medium text-gray-900">
+                        {`${selectedContact.first_name || ''} ${selectedContact.last_name || ''}`.trim() || selectedContact.full_name || 'N/A'}
+                      </span>
+                    </div>
+                  </div>
 
-              <div className="flex items-start gap-3 p-3 rounded-lg border bg-white shadow-sm">
-                <Mail className="h-5 w-5 text-gray-400 mt-0.5" />
-                <div className="flex flex-col text-sm">
-                  <span className="text-gray-500 text-xs">Email Address</span>
-                  <span className="font-medium text-gray-900 break-all">{selectedContact.email || 'N/A'}</span>
-                </div>
-              </div>
+                  <div className="flex items-start gap-3 p-3 rounded-lg border bg-white shadow-sm">
+                    <Mail className="h-5 w-5 text-gray-400 mt-0.5" />
+                    <div className="flex flex-col text-sm">
+                      <span className="text-gray-500 text-xs">Email Address</span>
+                      <span className="font-medium text-gray-900 break-all">{selectedContact.email || 'N/A'}</span>
+                    </div>
+                  </div>
+                </>
+              )}
 
               <div className="flex items-start gap-3 p-3 rounded-lg border bg-white shadow-sm">
                 <Shield className="h-5 w-5 text-gray-400 mt-0.5" />
@@ -226,6 +316,41 @@ function ContactsPage() {
                       {new Date(selectedContact.updated_at).toLocaleString()}
                     </span>
                   </div>
+                </div>
+              )}
+            </div>
+
+            {/* Bottom Form Actions Control Bar */}
+            <div className="border-t pt-4 mt-auto flex flex-col gap-2">
+              {isEditing ? (
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleSaveLocal}
+                    className="flex-1 bg-black text-white rounded-md text-sm font-medium py-2 px-3 flex items-center justify-center gap-1.5 hover:bg-gray-800 transition-colors"
+                  >
+                    <Check className="h-4 w-4" /> Save Changes
+                  </button>
+                  <button
+                    onClick={() => setIsEditing(false)}
+                    className="border rounded-md text-sm font-medium py-2 px-3 hover:bg-gray-50 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setIsEditing(true)}
+                    className="flex-1 border border-gray-300 rounded-md text-sm font-medium py-2 px-3 flex items-center justify-center gap-1.5 hover:bg-gray-50 transition-colors text-gray-700"
+                  >
+                    <Edit3 className="h-4 w-4" /> Edit Profile
+                  </button>
+                  <button
+                    onClick={() => handleDeleteLocal(selectedContact.id)}
+                    className="border border-red-200 rounded-md text-sm font-medium py-2 px-3 flex items-center justify-center gap-1.5 bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
+                  >
+                    <Trash2 className="h-4 w-4" /> Delete
+                  </button>
                 </div>
               )}
             </div>
