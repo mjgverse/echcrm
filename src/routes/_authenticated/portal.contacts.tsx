@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState, useEffect, useMemo } from 'react'
 import { supabase } from '@/integrations/supabase/client'
-import { Search, X, User, Mail, Shield, Clock, Trash2, Edit3, Check } from 'lucide-react'
+import { Search, X, User, Mail, Shield, Clock, Trash2, Edit3, Check, AlertTriangle } from 'lucide-react'
 
 export const Route = createFileRoute('/_authenticated/portal/contacts')({
   component: ContactsPage,
@@ -20,17 +20,23 @@ function ContactsPage() {
   const [editLastName, setEditLastName] = useState('')
   const [editEmail, setEditEmail] = useState('')
 
+  // Typing Confirmation Safeguard State
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [confirmInput, setConfirmInput] = useState('')
+
   useEffect(() => {
     fetchContacts()
   }, [])
 
-  // Watch for contact selection to populate edit form fields
+  // Watch for contact selection changes to reset all form states
   useEffect(() => {
     if (selectedContact) {
       setEditFirstName(selectedContact.first_name || '')
       setEditLastName(selectedContact.last_name || '')
       setEditEmail(selectedContact.email || '')
       setIsEditing(false)
+      setShowDeleteConfirm(false)
+      setConfirmInput('')
     }
   }, [selectedContact])
 
@@ -51,17 +57,17 @@ function ContactsPage() {
 
   // Local UI Actions (Prototype Mode)
   const handleDeleteLocal = (id: string) => {
-    const confirmed = window.confirm("Are you sure you want to remove this contact from the CRM view?")
-    if (confirmed) {
+    if (confirmInput === 'CONFIRM') {
       setContacts(prev => prev.filter(c => c.id !== id))
       setSelectedContact(null)
+      setShowDeleteConfirm(false)
+      setConfirmInput('')
     }
   }
 
   const handleSaveLocal = () => {
     if (!selectedContact) return
     
-    // Update the item inside our local state array
     setContacts(prev => prev.map(c => {
       if (c.id === selectedContact.id) {
         return {
@@ -75,7 +81,6 @@ function ContactsPage() {
       return c
     }))
 
-    // Update the currently viewed drawer profile preview
     setSelectedContact(prev => ({
       ...prev,
       first_name: editFirstName,
@@ -209,7 +214,7 @@ function ContactsPage() {
         {/* Drawer Header */}
         <div className="flex items-center justify-between border-b pb-4">
           <h2 className="text-lg font-bold text-gray-900">
-            {isEditing ? 'Modify Contact Attributes' : 'Contact Details'}
+            {showDeleteConfirm ? 'Confirm Account Removal' : isEditing ? 'Modify Contact Attributes' : 'Contact Details'}
           </h2>
           <button 
             onClick={() => setSelectedContact(null)}
@@ -229,7 +234,7 @@ function ContactsPage() {
               </div>
               <div>
                 <h3 className="text-base font-semibold text-gray-900">
-                  {isEditing ? 'Editing Mode' : (`${selectedContact.first_name || ''} ${selectedContact.last_name || ''}`.trim() || selectedContact.full_name || 'Unnamed Member')}
+                  {showDeleteConfirm ? 'Destructive Action Pending' : isEditing ? 'Editing Mode' : (`${selectedContact.first_name || ''} ${selectedContact.last_name || ''}`.trim() || selectedContact.full_name || 'Unnamed Member')}
                 </h3>
                 <p className="text-xs text-muted-foreground font-mono truncate max-w-[240px]">
                   ID: {selectedContact.id}
@@ -239,11 +244,29 @@ function ContactsPage() {
 
             {/* Profile Fields Details */}
             <div className="flex flex-col gap-4">
-              <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Metadata Profile</h4>
               
-              {isEditing ? (
+              {showDeleteConfirm ? (
+                /* High Fidelity Security Input Mode */
+                <div className="p-4 rounded-xl border border-red-200 bg-red-50/50 flex flex-col gap-3">
+                  <div className="flex items-center gap-2 text-red-800 font-semibold text-sm">
+                    <AlertTriangle className="h-4 w-4 text-red-600 flex-shrink-0" />
+                    Warning: Local Application Removal
+                  </div>
+                  <p className="text-xs text-red-700 leading-relaxed">
+                    This will hide this account configuration from your dashboard viewport. Type <span className="font-mono font-bold bg-white px-1 py-0.5 rounded border border-red-300 text-red-900">CONFIRM</span> below to execute.
+                  </p>
+                  <input 
+                    type="text"
+                    placeholder="Type CONFIRM here..."
+                    value={confirmInput}
+                    onChange={(e) => setConfirmInput(e.target.value)}
+                    className="border border-red-300 rounded-md px-3 py-2 text-sm bg-white w-full focus:outline-none focus:ring-2 focus:ring-red-500 font-mono uppercase tracking-wider"
+                  />
+                </div>
+              ) : isEditing ? (
                 /* Interactive Edit Form Fields */
                 <div className="flex flex-col gap-3">
+                  <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Metadata Profile</h4>
                   <div className="flex flex-col gap-1">
                     <label className="text-xs font-medium text-gray-600">First Name</label>
                     <input 
@@ -275,6 +298,7 @@ function ContactsPage() {
               ) : (
                 /* Standard Display Cards */
                 <>
+                  <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Metadata Profile</h4>
                   <div className="flex items-start gap-3 p-3 rounded-lg border bg-white shadow-sm">
                     <User className="h-5 w-5 text-gray-400 mt-0.5" />
                     <div className="flex flex-col text-sm">
@@ -295,34 +319,63 @@ function ContactsPage() {
                 </>
               )}
 
-              <div className="flex items-start gap-3 p-3 rounded-lg border bg-white shadow-sm">
-                <Shield className="h-5 w-5 text-gray-400 mt-0.5" />
-                <div className="flex flex-col text-sm">
-                  <span className="text-gray-500 text-xs">System Visibility Status</span>
-                  <span className={`inline-flex items-center gap-1.5 font-medium text-xs mt-0.5 px-2 py-0.5 rounded-full w-max ${
-                    selectedContact.is_visible ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-gray-50 text-gray-600 border'
-                  }`}>
-                    {selectedContact.is_visible ? 'Active / Visible' : 'Hidden'}
-                  </span>
-                </div>
-              </div>
-
-              {selectedContact.updated_at && (
-                <div className="flex items-start gap-3 p-3 rounded-lg border bg-white shadow-sm">
-                  <Clock className="h-5 w-5 text-gray-400 mt-0.5" />
-                  <div className="flex flex-col text-sm">
-                    <span className="text-gray-500 text-xs">Last Sync Profile Modification</span>
-                    <span className="font-medium text-gray-900 text-xs">
-                      {new Date(selectedContact.updated_at).toLocaleString()}
-                    </span>
+              {!showDeleteConfirm && (
+                <>
+                  <div className="flex items-start gap-3 p-3 rounded-lg border bg-white shadow-sm">
+                    <Shield className="h-5 w-5 text-gray-400 mt-0.5" />
+                    <div className="flex flex-col text-sm">
+                      <span className="text-gray-500 text-xs">System Visibility Status</span>
+                      <span className={`inline-flex items-center gap-1.5 font-medium text-xs mt-0.5 px-2 py-0.5 rounded-full w-max ${
+                        selectedContact.is_visible ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-gray-50 text-gray-600 border'
+                      }`}>
+                        {selectedContact.is_visible ? 'Active / Visible' : 'Hidden'}
+                      </span>
+                    </div>
                   </div>
-                </div>
+
+                  {selectedContact.updated_at && (
+                    <div className="flex items-start gap-3 p-3 rounded-lg border bg-white shadow-sm">
+                      <Clock className="h-5 w-5 text-gray-400 mt-0.5" />
+                      <div className="flex flex-col text-sm">
+                        <span className="text-gray-500 text-xs">Last Sync Profile Modification</span>
+                        <span className="font-medium text-gray-900 text-xs">
+                          {new Date(selectedContact.updated_at).toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
             </div>
 
-            {/* Bottom Form Actions Control Bar - FIXED WITH 50/50 SAFE SPLIT & SWAPPED ORDER */}
+            {/* Bottom Form Actions Control Bar */}
             <div className="border-t pt-4 mt-auto flex flex-col gap-2">
-              {isEditing ? (
+              {showDeleteConfirm ? (
+                /* Confirmation Input Controls */
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleDeleteLocal(selectedContact.id)}
+                    disabled={confirmInput !== 'CONFIRM'}
+                    className={`flex-1 rounded-md text-sm font-medium py-2 px-3 flex items-center justify-center gap-1.5 transition-colors text-white ${
+                      confirmInput === 'CONFIRM' 
+                        ? 'bg-red-600 hover:bg-red-700 cursor-pointer shadow-sm' 
+                        : 'bg-gray-300 cursor-not-allowed text-gray-500'
+                    }`}
+                  >
+                    <Trash2 className="h-4 w-4" /> Confirm & Remove
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowDeleteConfirm(false)
+                      setConfirmInput('')
+                    }}
+                    className="flex-1 border border-gray-300 rounded-md text-sm font-medium py-2 px-3 hover:bg-gray-50 transition-colors text-gray-700"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : isEditing ? (
+                /* Editing Mode Controls */
                 <div className="flex gap-2">
                   <button
                     onClick={handleSaveLocal}
@@ -338,9 +391,10 @@ function ContactsPage() {
                   </button>
                 </div>
               ) : (
+                /* Standard State Controls */
                 <div className="flex gap-2">
                   <button
-                    onClick={() => handleDeleteLocal(selectedContact.id)}
+                    onClick={() => setShowDeleteConfirm(true)}
                     className="flex-1 border border-red-200 rounded-md text-sm font-medium py-2 px-3 flex items-center justify-center gap-1.5 bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
                   >
                     <Trash2 className="h-4 w-4" /> Delete
