@@ -19,6 +19,7 @@ import {
   LogOut,
   Users,
   Home,
+  Contact,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
@@ -31,6 +32,7 @@ export function PortalSidebar() {
   const items = [
     { title: "Overview", to: "/portal", icon: LayoutDashboard, exact: true },
     { title: "Files", to: "/portal/files", icon: FolderKanban },
+    { title: "Contacts", to: "/portal/contacts", icon: Contact },
   ];
   const adminItems = [
     { title: "Inquiries", to: "/portal/inquiries", icon: Inbox },
