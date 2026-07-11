@@ -32,11 +32,11 @@ export function PortalSidebar() {
   const items = [
     { title: "Overview", to: "/portal", icon: LayoutDashboard, exact: true },
     { title: "Files", to: "/portal/files", icon: FolderKanban },
-    { title: "Contacts", to: "/portal/contacts", icon: Contact },
   ];
   const adminItems = [
     { title: "Inquiries", to: "/portal/inquiries", icon: Inbox },
     { title: "Team", to: "/portal/team", icon: Users },
+    { title: "Contacts", to: "/portal/contacts", icon: Contact },
   ];
 
   const isActive = (path: string, exact = false) =>
