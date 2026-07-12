@@ -40,11 +40,10 @@ function ContactsPage() {
     }
   }, [selectedContact])
 
-async function fetchContacts() {
+  async function fetchContacts() {
     try {
-      // Change 'profiles' to 'contacts' here
       const { data, error } = await supabase
-        .from('contacts')
+        .from('profiles')
         .select('*')
 
       if (error) throw error
@@ -55,6 +54,7 @@ async function fetchContacts() {
       setLoading(false)
     }
   }
+
   // Local UI Actions (Prototype Mode)
   const handleDeleteLocal = (id: string) => {
     if (confirmInput === 'CONFIRM') {
@@ -182,7 +182,11 @@ async function fetchContacts() {
                     className="hover:bg-gray-50 transition-colors cursor-pointer"
                   >
                     <td className="px-6 py-4 font-medium text-gray-900">
-                    {contact.full_name || <span className="text-gray-400 italic">Unnamed Member</span>}
+                      {contact.first_name || contact.full_name ? (
+                        `${contact.first_name || ''} ${contact.last_name || ''}`.trim() || contact.full_name
+                      ) : (
+                        <span className="text-gray-400 italic">Unnamed Member</span>
+                      )}
                     </td>
                     <td className="px-6 py-4 text-gray-600">
                       {contact.email || <span className="text-gray-400 italic">No email provided</span>}
